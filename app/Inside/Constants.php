@@ -13,5 +13,6 @@ class Constants
     const USERS_DB = 'users';
     const USERS_LOGIN_TOKEN_DB = 'users_login_token';
     const USERS_LOGIN_TOKEN_LOG_DB = 'users_login_token_log';
+    const CATEGORY_DB = 'category';
 
 }
