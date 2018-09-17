@@ -19,6 +19,7 @@ class CategoryTableMigration extends Migration
             $table->string('title');
             $table->string('description')->nullable();
             $table->string('path')->nullable();
+            $table->tinyInteger('type_path')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -29,7 +29,7 @@ class loginCheck
         }, $request->all());
         if (!$request->header('Authorization'))
             throw new ApiException(
-                ApiException::EXCEPTION_BAD_REQUEST_400,
+                ApiException::EXCEPTION_UNAUTHORIZED_401,
                 'Plz check your Authorization'
             );
         $token = JWT::decode($request->header('Authorization'), config("jwt.secret"), array('HS256'));

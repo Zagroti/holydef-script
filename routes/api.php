@@ -26,7 +26,7 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
     Route::middleware('loginCheck')->group(function () {
 
         //Media
-        Route::resource('category', 'CategoryController', ['only' => ['index', 'store', 'destroy']]);
+        Route::resource('category', 'CategoryController', ['only' => ['index']]);
 
         //User
         Route::post('user/update', 'UserController@update');

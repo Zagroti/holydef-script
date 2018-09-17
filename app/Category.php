@@ -2,11 +2,13 @@
 
 namespace App;
 
+use App\Inside\Constants;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Category extends Model
 {
+    protected $table = Constants::CATEGORY_DB;
     use SoftDeletes;
 
     /**
@@ -15,7 +17,7 @@ class Category extends Model
      * @var array
      */
     protected $fillable = [
-        "title", "description", "path"
+        "title", "description", "path", "type_path"
     ];
 
     protected $dates = ['deleted_at'];
