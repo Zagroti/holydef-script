@@ -95,16 +95,6 @@ class ZamanakController extends ApiController
 
     public function postVerifyRequest(Request $request)
     {
-        if (!$request->header('uuid'))
-            throw new ApiException(
-                ApiException::EXCEPTION_NOT_FOUND_404,
-                'Plz check your uuid'
-            );
-        if (!$request->header('app'))
-            throw new ApiException(
-                ApiException::EXCEPTION_NOT_FOUND_404,
-                'Plz check your app'
-            );
         if (!$request->input('code'))
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
@@ -132,7 +122,7 @@ class ZamanakController extends ApiController
                 ApiException::EXCEPTION_NOT_FOUND_404,
                 'code isn`t true'
             );
-        return $this->respond($this->verify($phone, $request->header('agent'), $request->header('app'), $request->header('uuid')));
+        return $this->respond($this->verify($phone, $request->header('agent')));
     }
 
     private function callZamanakApi($req)
@@ -195,73 +185,44 @@ class ZamanakController extends ApiController
     }
 
 
-    private function verify($phone, $agent, $app, $uuid)
+    private function verify($phone, $agent)
     {
-        $user = User::join(Constants::USERS_APPS_DB, Constants::USERS_DB . '.id', '=', Constants::USERS_APPS_DB . '.user_id')
-            ->where([Constants::USERS_APPS_DB . '.type_app' => $app, Constants::USERS_DB . '.active' => 1, Constants::USERS_DB . '.phone' => $phone])
+        $user = User::where([Constants::USERS_DB . '.active' => 1, Constants::USERS_DB . '.phone' => $phone])
             ->select(
                 Constants::USERS_DB . '.id',
                 Constants::USERS_DB . '.phone',
                 Constants::USERS_DB . '.email',
                 Constants::USERS_DB . '.username',
                 Constants::USERS_DB . '.active',
-                Constants::USERS_DB . '.user_level',
                 Constants::USERS_DB . '.auto_charge',
                 Constants::USERS_DB . '.first_name',
                 Constants::USERS_DB . '.last_name',
                 Constants::USERS_DB . '.birthday',
                 Constants::USERS_DB . '.bio',
-                Constants::USERS_DB . '.profile_type',
                 Constants::USERS_DB . '.gender',
                 Constants::USERS_DB . '.ref_link',
                 Constants::USERS_DB . '.created_at',
-                Constants::USERS_DB . '.updated_at',
-                Constants::USERS_APPS_DB . '.type_app'
+                Constants::USERS_DB . '.updated_at'
             )
             ->first();
         if (!$user) {
-            $hashIds = new Hashids("arioo");
+            $hashIds = new Hashids(config("config.hashIds"));
             $refLink = $hashIds->encode($phone, intval(microtime(true)));
-            $user = User::create(['phone' => $phone, 'email' => '', 'auto_charge' => 0, 'active' => 1, 'user_level' => 0,
-                'remember_token' => '', 'first_name' => '', 'birthday' => 0, 'bio' => '', 'username' => '', 'profile_type' => 0, 'gender' => 0, 'last_name' => '', "ref_link" => $refLink]);
-            $info = UserApps::create(['user_id' => $user->id, 'type_app' => $app, 'created_at' => strtotime(date('Y-m-d'))]);
-            $user->type_app = $info->type_app;
-            $user->media_id = 0;
-            //create default wallet
-            Wallet::create([
-                'user_id' => $user->id,
-                'title' => Constants::MAIN_DEFAULT_WALLET_TITLE,
-                'is_default' => Constants::MAIN_DEFAULT_WALLET_VALUE,
-                'price' => Constants::MAIN_DEFAULT_WALLET_PRICE,
-            ]);
+            $user = User::create(['phone' => $phone, 'email' => '', 'auto_charge' => 0, 'active' => 1, 'remember_token' => '', 'first_name' => '', 'birthday' => 0, 'bio' => '', 'username' => '', 'gender' => 0, 'last_name' => '', "ref_link" => $refLink]);
         }
         if ($user->first_name == '' && $user->last_name == '')
             $user->isFirst = true;
         else
             $user->isFirst = false;
-        $user->photo = $user->photo;
-        $user->media_id = $user->media_id;
-        $this->generateToken($user, $agent, $app);
-
-        // Hamed - disabling queue and exchange creation from api for now
-        /* create queue for user device and create exchange for user */
-        /*$connection = new AMQPStreamConnection(config("rabbitmq.server"), config("rabbitmq.port"), config("rabbitmq.user"), config("rabbitmq.password"), '/');
-        $channel = $connection->channel();
-        $channel->exchange_declare('ex.u.' . $user->id, 'topic', false, true, false);
-        $channel->queue_declare('u.' . $user->id . '.' . $uuid, false, true, false, false);
-        $channel->queue_bind('u.' . $user->id . '.' . $uuid, 'ex.u.' . $user->id);
-        $channel->close();
-        $connection->close();*/
-        /* create queue for user device and create exchange for user */
+        $this->generateToken($user, $agent);
         return $user;
     }
 
-    private function generateToken(User $user, $agent, $app)
+    private function generateToken(User $user, $agent)
     {
         $object = array(
             "user_id" => $user->id,
-            "agent" => $agent,
-            "app" => $app
+            "agent" => $agent
         );
         $token = JWT::encode($object, config("jwt.secret"));
         $user->token = $token;
