@@ -6,14 +6,11 @@ use App\Exceptions\ApiException;
 use App\Http\Controllers\ApiController;
 use App\Inside\Constants;
 use App\User;
-use App\UserApps;
 use App\UsersLoginToken;
 use App\UsersLoginTokenLog;
-use App\Wallet;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use \Firebase\JWT\JWT;
-use Illuminate\Support\Facades\Redis;
 
 class ZamanakController extends ApiController
 {
