@@ -14,7 +14,7 @@ class TestTableSeeder extends Seeder
         $faker = Faker\Factory::create();
         for ($i = 1; $i <= 10; $i++)
             \App\Category::create([
-                "title" => $faker->title,
+                "title" => $faker->jobTitle,
                 "description" => $faker->text,
                 "path" => $faker->imageUrl(),
                 "type_path" => 2
@@ -22,9 +22,9 @@ class TestTableSeeder extends Seeder
         for ($i = 0; $i <= 100; $i++)
             \App\Article::create([
                 "cat_id" => rand(1, 10),
-                "title" => $faker->title,
-                "short_description" => $faker->text,
-                "description" => $faker->text,
+                "title" => $faker->jobTitle,
+                "short_description" => $faker->text(100),
+                "description" => $faker->text(200),
                 "image" => $faker->imageUrl(),
                 "type_image" => 2,
                 "video" => null,
