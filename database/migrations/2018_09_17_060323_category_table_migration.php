@@ -17,7 +17,7 @@ class CategoryTableMigration extends Migration
         Schema::create(Constants::CATEGORY_DB, function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('path')->nullable();
             $table->tinyInteger('type_path')->nullable();
             $table->timestamps();
