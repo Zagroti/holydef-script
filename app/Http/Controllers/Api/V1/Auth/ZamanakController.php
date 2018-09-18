@@ -156,12 +156,12 @@ class ZamanakController extends ApiController
     {
         UsersLoginToken::where('expire_at', '<', strtotime(date('Y-m-d H:i:s')))->delete();
         $UsersLoginToken = UsersLoginToken::where(['login' => $phone])->first();
-        Redis::incr($phone);
-        if (Redis::get($phone) > 5) {
-            if (Redis::get($phone) == 6)
-                Redis::expireAt($phone, time() + 120);
-            return false;
-        }
+//        Redis::incr($phone);
+//        if (Redis::get($phone) > 5) {
+//            if (Redis::get($phone) == 6)
+//                Redis::expireAt($phone, time() + 120);
+//            return false;
+//        }
         if (!$UsersLoginToken) {
             UsersLoginToken::create(['login' => $phone, 'token' => $token, 'expire_at' => strtotime(date('Y-m-d H:i:s', strtotime("+1 min"))), 'created_at' => strtotime(date('Y-m-d H:i:s'))]);
             UsersLoginTokenLog::create(['login' => $phone, 'token' => $token, 'type' => $type, 'expire_at' => strtotime(date('Y-m-d H:i:s', strtotime("+1 min"))), 'created_at' => strtotime(date('Y-m-d H:i:s'))]);
