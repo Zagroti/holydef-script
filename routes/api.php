@@ -23,20 +23,20 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
 
 
     //After Login
-    Route::middleware('loginCheck')->group(function () {
+//    Route::middleware('loginCheck')->group(function () {
 
-        //Category
-        Route::resource('category', 'CategoryController', ['only' => ['index']]);
+    //Category
+    Route::resource('category', 'CategoryController', ['only' => ['index']]);
 
-        //Article
-        Route::resource('article/{cat_id}', 'ArticleController', ['only' => ['index']]);
+    //Article
+    Route::resource('article/{cat_id}', 'ArticleController', ['only' => ['index']]);
 
-        //User
-        Route::post('user/update', 'UserController@update');
-        Route::post('user/fcm', 'UserController@fcm');
-        Route::post('user/apns', 'UserController@apns');
-        Route::get('user', 'UserController@index');
+    //User
+    Route::post('user/update', 'UserController@update');
+    Route::post('user/fcm', 'UserController@fcm');
+    Route::post('user/apns', 'UserController@apns');
+    Route::get('user', 'UserController@index');
 
-    });
+//    });
 
 });
