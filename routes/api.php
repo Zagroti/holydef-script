@@ -26,7 +26,8 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
 //    Route::middleware('loginCheck')->group(function () {
 
     //Article
-    Route::resource('article/{cat_id}', 'ArticleController', ['only' => ['index']]);
+    Route::get('article/{cat_id}', 'ArticleController@index');
+    Route::get('article/{cat_id}/{id}', 'ArticleController@show');
 
     //User
 //    Route::post('user/update', 'UserController@update');
