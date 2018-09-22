@@ -18,8 +18,8 @@ class ArticleTableMigration extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('cat_id');
             $table->string('title');
-            $table->text('short_description')->nullable();
-            $table->text('description')->nullable();
+            $table->longText('short_description')->nullable();
+            $table->longText('description')->nullable();
             $table->string('image')->nullable();
             $table->tinyInteger('type_image')->nullable();
             $table->string('video')->nullable();
