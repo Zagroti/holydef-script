@@ -12,16 +12,9 @@ class TestTableSeeder extends Seeder
     public function run()
     {
         $faker = Faker\Factory::create();
-        for ($i = 1; $i <= 10; $i++)
-            \App\Category::create([
-                "title" => $faker->jobTitle,
-                "description" => $faker->text,
-                "path" => $faker->imageUrl(),
-                "type_path" => 2
-            ]);
         for ($i = 0; $i <= 100; $i++)
             \App\Article::create([
-                "cat_id" => rand(1, 10),
+                "cat_id" => rand(1, 12),
                 "title" => $faker->jobTitle,
                 "short_description" => $faker->text(100),
                 "description" => $faker->text(200),
