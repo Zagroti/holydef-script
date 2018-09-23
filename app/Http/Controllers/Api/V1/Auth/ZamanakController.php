@@ -23,7 +23,7 @@ class ZamanakController extends ApiController
         if (!$matches)
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
-                'your phone number is wrong'
+                'شماره تلفن شما اشتباه است'
             );
         $phone = '98' . $matches[0][0];
         $phone = str_replace('+', '', $phone);
@@ -32,7 +32,7 @@ class ZamanakController extends ApiController
         if (!$this->UsersLoginToken($phone, $token, Constants::LOGIN_TYPE_SMS))
             throw new ApiException(
                 ApiException::EXCEPTION_BAD_REQUEST_400,
-                'To many request'
+                'درخواست بیش از حد'
             );
         if ($request->header('X-DEBUG') == 1)
             return $this->respond(["status" => "success", 'code' => $token], null);
@@ -60,7 +60,7 @@ class ZamanakController extends ApiController
         if (!$matches)
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
-                'your phone number is wrong'
+                'شماره تلفن شما اشتباه است'
             );
         $phone = '98' . $matches[0][0];
         $phone = str_replace('+', '', $phone);
@@ -69,7 +69,7 @@ class ZamanakController extends ApiController
         if (!$this->UsersLoginToken($phone, $token, Constants::LOGIN_TYPE_CALL))
             throw new ApiException(
                 ApiException::EXCEPTION_BAD_REQUEST_400,
-                'To many request'
+                'درخواست بیش از حد'
             );
         if ($request->header('X-DEBUG') == 1)
             return $this->respond(["status" => "success", 'code' => $token], null);
@@ -109,7 +109,7 @@ class ZamanakController extends ApiController
         if (!$matches)
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
-                'your phone number is wrong'
+                'شماره تلفن شما اشتباه است'
             );
         $phone = '98' . $matches[0][0];
         $phone = str_replace('+', '', $phone);
@@ -117,7 +117,7 @@ class ZamanakController extends ApiController
         if (!$this->CheckUsersLoginToken($phone, $request->input('code')))
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
-                'code isn`t true'
+                'کد درست نیست'
             );
         return $this->respond($this->verify($phone, $request->header('agent')));
     }
