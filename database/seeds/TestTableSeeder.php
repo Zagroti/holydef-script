@@ -21,10 +21,10 @@ class TestTableSeeder extends Seeder
                 "description" => $value->full_desc,
                 "image" => "http://holydef.ir/appdata/media/images/" . $value->img,
                 "type_image" => 2,
-                "video" => null,
-                "type_video" => 0,
-                "audio" => null,
-                "type_audio" => 0,
+                "video" => "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4",
+                "type_video" => 2,
+                "audio" => "https://www.irantunez.com/uploads/audios/1721f186dc9dc90fa4d972186bc636c7/dariush-shekanjeh-gar.mp3",
+                "type_audio" => 2,
             ]);
         $faker = Faker\Factory::create();
         for ($i = 0; $i <= 100; $i++)
@@ -35,10 +35,10 @@ class TestTableSeeder extends Seeder
                 "description" => $faker->text(200),
                 "image" => $faker->imageUrl(),
                 "type_image" => 2,
-                "video" => null,
-                "type_video" => 0,
-                "audio" => null,
-                "type_audio" => 0,
+                "video" => "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4",
+                "type_video" => 2,
+                "audio" => "https://www.irantunez.com/uploads/audios/1721f186dc9dc90fa4d972186bc636c7/dariush-shekanjeh-gar.mp3",
+                "type_audio" => 2,
             ]);
     }
 }
