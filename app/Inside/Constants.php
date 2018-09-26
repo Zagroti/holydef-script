@@ -16,4 +16,13 @@ class Constants
     const CATEGORY_DB = 'category';
     const ARTICLE_DB = 'article';
 
+
+    const PHOTO_TYPE = ["image/gif", "image/jpeg", "image/jpg", "image/png", "image/PNG", "image/GIF", 'image/*'];
+    const VIDEO_TYPE = ["video/x-flv", "video/mp4", "application/x-mpegURL", "video/MP2T", "video/3gpp", "video/quicktime",
+        "video/x-msvideo", "video/x-ms-wmv", "avi", "swf", "flv", "wmv", "application/octet-stream",
+        "video/quicktime", "video/MP2T", "video/3gpp", "video/x-msvideo", "video/x-ms-wmv", "video/x-ms-wmv",
+        "video/x-matroska", "video/mpeg", "application/x-shockwave-flash", "video/webm", "video/mov", 'video/*'];
+
+    const AUDIO_TYPE = ["audio/mpeg", "audio/x-wav", "audio/ogg", "audio/mp4", "audio/midi", "audio/basic", "audio/adpcm", "audio//s3m",
+        "audio/silk", "audio/webm", "audio/m4a"];
 }

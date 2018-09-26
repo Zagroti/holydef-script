@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Article;
+use App\Exceptions\ApiException;
 use App\Http\Controllers\ApiController;
+use App\Inside\Constants;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -51,9 +53,64 @@ class ArticleController extends ApiController
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($catId, Request $request)
     {
-        //
+        if (!$request->input('title'))
+            throw new ApiException(
+                ApiException::EXCEPTION_BAD_REQUEST_400,
+                'Plz check your title'
+            );
+        if ($request->file('image'))
+            if (!in_array($request->file('image')->getClientMimeType(), Constants::PHOTO_TYPE))
+                throw new ApiException(
+                    ApiException::EXCEPTION_BAD_REQUEST_400,
+                    'Plz check your image'
+                );
+        if ($request->file('video'))
+            if (!in_array($request->file('video')->getClientMimeType(), Constants::VIDEO_TYPE))
+                throw new ApiException(
+                    ApiException::EXCEPTION_BAD_REQUEST_400,
+                    'Plz check your video'
+                );
+        if ($request->file('audio'))
+            if (!in_array($request->file('audio')->getClientMimeType(), Constants::AUDIO_TYPE))
+                throw new ApiException(
+                    ApiException::EXCEPTION_BAD_REQUEST_400,
+                    'Plz check your audio'
+                );
+        \Storage::disk('upload')->makeDirectory("article", 755);
+        \Storage::disk('upload')->makeDirectory("article/image", 755);
+        \Storage::disk('upload')->makeDirectory("article/video", 755);
+        \Storage::disk('upload')->makeDirectory("article/audio", 755);
+        $image = "";
+        if ($request->file('image')) {
+            $image = md5(time() . pathinfo($request->file('image')->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $request->file('image')->getClientOriginalExtension();
+            \Storage::disk('upload')->put("article/image/" . $image, \File::get($request->file('image')->getRealPath()));
+        }
+        $video = "";
+        if ($request->file('video')) {
+            $video = md5(time() . pathinfo($request->file('video')->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $request->file('video')->getClientOriginalExtension();
+            \Storage::disk('upload')->put("article/video/" . $video, \File::get($request->file('video')->getRealPath()));
+        }
+        $audio = "";
+        if ($request->file('audio')) {
+            $audio = md5(time() . pathinfo($request->file('audio')->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $request->file('audio')->getClientOriginalExtension();
+            \Storage::disk('upload')->put("article/audio/" . $audio, \File::get($request->file('audio')->getRealPath()));
+        }
+        \App\Article::create([
+            "cat_id" => $catId,
+            "title" => $request->input("title"),
+            "short_description" => $request->input("short_description"),
+            "description" => $request->input("description"),
+            "image" => $image,
+            "type_image" => 1,
+            "video" => $video,
+            "type_video" => 1,
+            "audio" => $audio,
+            "type_audio" => 1,
+        ]);
+
+        return $this->respond(["status" => "success"]);
     }
 
     /**
