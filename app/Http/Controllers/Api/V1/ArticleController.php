@@ -97,7 +97,7 @@ class ArticleController extends ApiController
             $audio = md5(time() . pathinfo($request->file('audio')->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $request->file('audio')->getClientOriginalExtension();
             \Storage::disk('upload')->put("article/audio/" . $audio, \File::get($request->file('audio')->getRealPath()));
         }
-        \App\Article::create([
+        Article::create([
             "cat_id" => $catId,
             "title" => $request->input("title"),
             "short_description" => $request->input("short_description"),
