@@ -166,7 +166,7 @@ class ArticleController extends ApiController
 
     ///////////////function//////////////////////////////////
 
-    public function search($catId, Request $request)
+    public function search(Request $request)
     {
         $article = Article::select(
             "id",
