@@ -26,6 +26,7 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
 //    Route::middleware('loginCheck')->group(function () {
 
     //Article
+    Route::get('search', 'ArticleController@search');
     Route::get('article/{cat_id}', 'ArticleController@index');
     Route::get('article/{cat_id}/{id}', 'ArticleController@show');
 

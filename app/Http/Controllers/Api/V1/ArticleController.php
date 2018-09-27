@@ -163,4 +163,24 @@ class ArticleController extends ApiController
     {
         //
     }
+
+    ///////////////function//////////////////////////////////
+
+    public function search($catId, Request $request)
+    {
+        $article = Article::select(
+            "id",
+            "cat_id",
+            "title",
+            "short_description",
+            DB::raw("CASE WHEN type_image = '2' THEN image WHEN image != '' THEN (concat ( '" . $request->root() . "/files/article/image/" . "', image) ) ELSE '' END as image"),
+            "type_image",
+            DB::raw("CASE WHEN type_video = '2' THEN video WHEN video != '' THEN (concat ( '" . $request->root() . "/files/article/video/" . "', video) ) ELSE '' END as video"),
+            "type_video",
+            DB::raw("CASE WHEN type_audio = '2' THEN audio WHEN audio != '' THEN (concat ( '" . $request->root() . "/files/article/audio/" . "', audio) ) ELSE '' END as audio"),
+            "type_audio"
+        )->orWhere('title', 'like', '%' . $request->input('search') . '%')->get();
+        return $this->respond($article);
+    }
+
 }
