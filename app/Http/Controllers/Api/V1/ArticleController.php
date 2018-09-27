@@ -179,7 +179,8 @@ class ArticleController extends ApiController
             "type_video",
             DB::raw("CASE WHEN type_audio = '2' THEN audio WHEN audio != '' THEN (concat ( '" . $request->root() . "/files/article/audio/" . "', audio) ) ELSE '' END as audio"),
             "type_audio"
-        )->orWhere('title', 'like', '%' . $request->input('search') . '%')->get();
+        )->orWhere('title', 'like', '%' . $request->input('search') . '%')
+            ->orWhere('short_description', 'like', '%' . $request->input('search') . '%')->get();
         return $this->respond($article);
     }
 
