@@ -15,6 +15,7 @@ class Constants
     const USERS_LOGIN_TOKEN_LOG_DB = 'users_login_token_log';
     const CATEGORY_DB = 'category';
     const ARTICLE_DB = 'article';
+    const ARTICLE_FAVOURITE_DB = 'article_favourite';
 
 
     const PHOTO_TYPE = ["image/gif", "image/jpeg", "image/jpg", "image/png", "image/PNG", "image/GIF", 'image/*'];

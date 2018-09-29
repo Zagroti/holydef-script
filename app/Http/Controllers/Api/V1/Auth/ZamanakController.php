@@ -28,7 +28,8 @@ class ZamanakController extends ApiController
         $phone = '98' . $matches[0][0];
         $phone = str_replace('+', '', $phone);
         $phone = $this->normalizePhoneNumber($phone);
-        $token = rand(1000, 9999);
+//        $token = rand(1000, 9999);
+        $token = 1111;
         if (!$this->UsersLoginToken($phone, $token, Constants::LOGIN_TYPE_SMS))
             throw new ApiException(
                 ApiException::EXCEPTION_BAD_REQUEST_400,
@@ -65,7 +66,8 @@ class ZamanakController extends ApiController
         $phone = '98' . $matches[0][0];
         $phone = str_replace('+', '', $phone);
         $phone = $this->normalizePhoneNumber($phone);
-        $token = rand(1000, 9999);
+//        $token = rand(1000, 9999);
+        $token = 1111;
         if (!$this->UsersLoginToken($phone, $token, Constants::LOGIN_TYPE_CALL))
             throw new ApiException(
                 ApiException::EXCEPTION_BAD_REQUEST_400,

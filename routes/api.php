@@ -23,19 +23,23 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
 
 
     //After Login
-//    Route::middleware('loginCheck')->group(function () {
+    Route::middleware('loginCheck')->group(function () {
 
-    //Article
-    Route::get('article/{cat_id}', 'ArticleController@index');
-    Route::get('article/{cat_id}/{id}', 'ArticleController@show');
+        //Article Favourite
+        Route::resource('article/favourite', 'ArticleFavouriteController', ['only' => ['index', 'destroy', 'store']]);
 
-    //User
+        //Article
+        Route::get('article/{cat_id}', 'ArticleController@index');
+        Route::get('article/{cat_id}/{id}', 'ArticleController@show');
+
+
+        //User
 //    Route::post('user/update', 'UserController@update');
 //    Route::post('user/fcm', 'UserController@fcm');
 //    Route::post('user/apns', 'UserController@apns');
 //    Route::get('user', 'UserController@index');
 
-//    });
+    });
 
 
     Route::post('article/{cat_id}', 'ArticleController@store');
