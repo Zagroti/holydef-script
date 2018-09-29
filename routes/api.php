@@ -28,13 +28,12 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
         //Article Favourite
         Route::resource('article/favourite', 'ArticleFavouriteController', ['only' => ['index', 'destroy', 'store']]);
 
+        //Article
+        Route::get('search', 'ArticleController@search');
+        Route::get('article/{cat_id}', 'ArticleController@index');
+        Route::get('article/{cat_id}/{id}', 'ArticleController@show');
 
-    //Article
-    Route::get('search', 'ArticleController@search');
-    Route::get('article/{cat_id}', 'ArticleController@index');
-    Route::get('article/{cat_id}/{id}', 'ArticleController@show');
-
-    //User
+        //User
 //    Route::post('user/update', 'UserController@update');
 //    Route::post('user/fcm', 'UserController@fcm');
 //    Route::post('user/apns', 'UserController@apns');
