@@ -14,9 +14,9 @@ return [
 
 
     'supportsCredentials' => false,
-    'allowedOrigins' => ['*'],
+    'allowedOrigins' => ['*', 'http://store.holydef.ir'],
     'allowedOriginsPatterns' => [],
-    'allowedHeaders' => ['Content-Type', 'Accept', 'X-Requested-With', 'Authorization', 'market', 'X-Debug', 'Origin', 'Access-Control-Allow-Headers'],
+    'allowedHeaders' => ['Content-Type', 'Accept', 'X-Requested-With', 'Authorization', 'market', 'X-Debug'],
     'allowedMethods' => ['*'], // ex: ['GET', 'POST', 'PUT',  'DELETE']
     'exposedHeaders' => [],
     'maxAge' => 0,
