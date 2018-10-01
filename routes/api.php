@@ -12,38 +12,36 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-dd(1);
-Route::middleware('cores')->group(function () {
-
-    Route::namespace('Api\V1')->prefix('/v1')->group(function () {
-
-        //Auth otp
-        Route::post('auth/otp/sms', 'Auth\ZamanakController@postSmsRequest');
-        Route::post('auth/otp/call', 'Auth\ZamanakController@postCallRequest');
-        Route::post('auth/otp/verify', 'Auth\ZamanakController@postVerifyRequest');
 
 
-        //After Login
-        Route::middleware('loginCheck')->group(function () {
+Route::namespace('Api\V1')->prefix('/v1')->group(function () {
 
-            //Article Favourite
-            Route::resource('article/favourite', 'ArticleFavouriteController', ['only' => ['index', 'destroy', 'store']]);
+    //Auth otp
+    Route::post('auth/otp/sms', 'Auth\ZamanakController@postSmsRequest');
+    Route::post('auth/otp/call', 'Auth\ZamanakController@postCallRequest');
+    Route::post('auth/otp/verify', 'Auth\ZamanakController@postVerifyRequest');
 
-            //Article
-            Route::get('search', 'ArticleController@search');
-            Route::get('article/{cat_id}', 'ArticleController@index');
-            Route::get('article/{cat_id}/{id}', 'ArticleController@show');
 
-            //User
+    //After Login
+    Route::middleware('loginCheck')->group(function () {
+
+        //Article Favourite
+        Route::resource('article/favourite', 'ArticleFavouriteController', ['only' => ['index', 'destroy', 'store']]);
+
+        //Article
+        Route::get('search', 'ArticleController@search');
+        Route::get('article/{cat_id}', 'ArticleController@index');
+        Route::get('article/{cat_id}/{id}', 'ArticleController@show');
+
+        //User
 //    Route::post('user/update', 'UserController@update');
 //    Route::post('user/fcm', 'UserController@fcm');
 //    Route::post('user/apns', 'UserController@apns');
 //    Route::get('user', 'UserController@index');
 
-        });
-
-
-        Route::post('article/{cat_id}', 'ArticleController@store');
-
     });
+
+
+    Route::post('article/{cat_id}', 'ArticleController@store');
+
 });
