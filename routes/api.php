@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+dd(1);
 Route::middleware('cores')->group(function () {
 
     Route::namespace('Api\V1')->prefix('/v1')->group(function () {
