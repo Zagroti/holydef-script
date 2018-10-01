@@ -15,6 +15,7 @@ class Cors
      */
     public function handle($request, Closure $next)
     {
+        dd(1);
         $headers = [
             'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS, PUT, DELETE',
