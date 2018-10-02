@@ -59,17 +59,17 @@ class ArticleFavouriteController extends ApiController
                 ApiException::EXCEPTION_BAD_REQUEST_400,
                 'article_id should be filled'
             );
-        if (ArticleFavourite::where(['article_id' => $request->input('article_id'), 'user_id' => $request->input('user_id')])->exists())
-            throw new ApiException(
-                ApiException::EXCEPTION_BAD_REQUEST_400,
-                'article_id is exists'
-            );
-        ArticleFavourite::create([
-            'article_id' => $request->input('article_id'),
-            'user_id' => $request->input('user_id'),
-            'created_at' => strtotime("now")
-        ]);
-        return $this->respond(['status' => 'success']);
+        if (ArticleFavourite::where(['article_id' => $request->input('article_id'), 'user_id' => $request->input('user_id')])->exists()) {
+            ArticleFavourite::where(['article_id' => $request->input('article_id'), 'user_id' => $request->input('user_id')])->delete();
+            return $this->respond(['status' => 'success', "type" => "unFavourite"]);
+        } else {
+            ArticleFavourite::create([
+                'article_id' => $request->input('article_id'),
+                'user_id' => $request->input('user_id'),
+                'created_at' => strtotime("now")
+            ]);
+            return $this->respond(['status' => 'success', "type" => "favourite"]);
+        }
     }
 
     /**
@@ -114,13 +114,6 @@ class ArticleFavouriteController extends ApiController
      */
     public function destroy($id, Request $request)
     {
-        if (!ArticleFavourite::where(['id' => $id, 'user_id' => $request->input('user_id')])->exists()) {
-            throw new ApiException(
-                ApiException::EXCEPTION_BAD_REQUEST_400,
-                'Plz check your favourite'
-            );
-        }
-        ArticleFavourite::where(['id' => $id, 'user_id' => $request->input('user_id')])->delete();
-        return $this->respond(['status' => 'success']);
+        //
     }
 }
