@@ -29,8 +29,7 @@ class ArticleFavouriteController extends ApiController
                 DB::raw("CASE WHEN type_video = '2' THEN video WHEN video != '' THEN (concat ( '" . $request->root() . "/files/article/video/" . "', video) ) ELSE '' END as video"),
                 Constants::ARTICLE_DB . ".type_video",
                 DB::raw("CASE WHEN type_audio = '2' THEN audio WHEN audio != '' THEN (concat ( '" . $request->root() . "/files/article/audio/" . "', audio) ) ELSE '' END as audio"),
-                Constants::ARTICLE_DB . ".type_audio",
-                Constants::ARTICLE_FAVOURITE_DB . ".*"
+                Constants::ARTICLE_DB . ".type_audio"
             )
             ->where(Constants::ARTICLE_FAVOURITE_DB . '.user_id', $request->input('user_id'))->orderBy(Constants::ARTICLE_FAVOURITE_DB . '.created_at', 'DESC')->get();
         return $this->respond($favourite);
