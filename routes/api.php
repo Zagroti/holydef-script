@@ -32,7 +32,7 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
         Route::get('search', 'ArticleController@search');
         Route::get('article/{cat_id}', 'ArticleController@index');
         Route::get('article/{cat_id}/{id}', 'ArticleController@show');
-        Route::get('article/{cat_id}/{id}/getIsFavourite', 'ArticleController@getIsFavourite');
+        Route::get('article/{cat_id}/{id}/favourite', 'ArticleController@getIsFavourite');
 
         //User
 //    Route::post('user/update', 'UserController@update');
