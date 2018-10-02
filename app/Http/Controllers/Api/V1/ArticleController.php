@@ -128,9 +128,6 @@ class ArticleController extends ApiController
             DB::raw("CASE WHEN type_video = '2' THEN video WHEN video != '' THEN (concat ( '" . $request->root() . "/files/article/video/" . "', video) ) ELSE '' END as video"),
             DB::raw("CASE WHEN type_audio = '2' THEN audio WHEN audio != '' THEN (concat ( '" . $request->root() . "/files/article/audio/" . "', audio) ) ELSE '' END as audio")
         )->where(["cat_id" => $catId, "id" => $id])->first();
-        $article->is_favourite = false;
-        if (ArticleFavourite::where(['article_id' => $id, 'user_id' => $request->input('user_id')])->exists())
-            $article->is_favourite = true;
         return $this->respond($article);
     }
 
@@ -187,5 +184,15 @@ class ArticleController extends ApiController
             ->orWhere('short_description', 'like', '%' . $request->input('search') . '%')->get();
         return $this->respond($article);
     }
+
+
+    public function getIsFavourite($catId, $id, Request $request)
+    {
+        $article["is_favourite"] = false;
+        if (ArticleFavourite::where(['article_id' => $id, 'user_id' => $request->input('user_id')])->exists())
+            $article["is_favourite"] = true;
+        return $this->respond($article);
+    }
+
 
 }
