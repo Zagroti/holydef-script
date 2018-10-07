@@ -44,5 +44,7 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
 
 
     Route::post('article/{cat_id}', 'ArticleController@store');
+    Route::post('article/{cat_id}/update/{id}', 'ArticleController@update');
+    Route::delete('article/{cat_id}/delete/{id}', 'ArticleController@destroy');
 
 });

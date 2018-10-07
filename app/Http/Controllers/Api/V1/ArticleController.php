@@ -110,7 +110,6 @@ class ArticleController extends ApiController
             "audio" => $audio,
             "type_audio" => 1,
         ]);
-
         return $this->respond(["status" => "success"]);
     }
 
@@ -149,9 +148,61 @@ class ArticleController extends ApiController
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($cat_id, Request $request, $id)
     {
-        //
+        if (!$request->input('title'))
+            throw new ApiException(
+                ApiException::EXCEPTION_BAD_REQUEST_400,
+                'Plz check your title'
+            );
+        if ($request->file('image'))
+            if (!in_array($request->file('image')->getClientMimeType(), Constants::PHOTO_TYPE))
+                throw new ApiException(
+                    ApiException::EXCEPTION_BAD_REQUEST_400,
+                    'Plz check your image'
+                );
+        if ($request->file('video'))
+            if (!in_array($request->file('video')->getClientMimeType(), Constants::VIDEO_TYPE))
+                throw new ApiException(
+                    ApiException::EXCEPTION_BAD_REQUEST_400,
+                    'Plz check your video'
+                );
+        if ($request->file('audio'))
+            if (!in_array($request->file('audio')->getClientMimeType(), Constants::AUDIO_TYPE))
+                throw new ApiException(
+                    ApiException::EXCEPTION_BAD_REQUEST_400,
+                    'Plz check your audio'
+                );
+        if (!$article = Article::where(['id' => $id, 'cat_id' => $cat_id])->first())
+            throw new ApiException(
+                ApiException::EXCEPTION_BAD_REQUEST_400,
+                'Plz check your cat_id and id'
+            );
+
+        $image = $article->image;
+        if ($request->file('image')) {
+            $image = md5(time() . pathinfo($request->file('image')->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $request->file('image')->getClientOriginalExtension();
+            \Storage::disk('upload')->put("article/image/" . $image, \File::get($request->file('image')->getRealPath()));
+        }
+        $video = $article->video;
+        if ($request->file('video')) {
+            $video = md5(time() . pathinfo($request->file('video')->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $request->file('video')->getClientOriginalExtension();
+            \Storage::disk('upload')->put("article/video/" . $video, \File::get($request->file('video')->getRealPath()));
+        }
+        $audio = $article->audio;
+        if ($request->file('audio')) {
+            $audio = md5(time() . pathinfo($request->file('audio')->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $request->file('audio')->getClientOriginalExtension();
+            \Storage::disk('upload')->put("article/audio/" . $audio, \File::get($request->file('audio')->getRealPath()));
+        }
+        Article::where(['id' => $id, 'cat_id' => $cat_id])->update([
+            "title" => $request->input("title"),
+            "short_description" => $request->input("short_description"),
+            "description" => $request->input("description"),
+            "image" => $image,
+            "video" => $video,
+            "audio" => $audio,
+        ]);
+        return $this->respond(["status" => "success"]);
     }
 
     /**
@@ -160,9 +211,15 @@ class ArticleController extends ApiController
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($cat_id, $id)
     {
-        //
+        if (!Article::where(['id' => $id, 'cat_id' => $cat_id])->exists())
+            throw new ApiException(
+                ApiException::EXCEPTION_BAD_REQUEST_400,
+                'Plz check your cat_id and id'
+            );
+        Article::where(['id' => $id, 'cat_id' => $cat_id])->delete();
+        return $this->respond(["status" => "success"]);
     }
 
     ///////////////function//////////////////////////////////
