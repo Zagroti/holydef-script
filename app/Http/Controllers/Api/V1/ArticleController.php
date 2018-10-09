@@ -19,10 +19,6 @@ class ArticleController extends ApiController
      */
     public function index($catId, Request $request)
     {
-        $skip = 0;
-        if ($request->input('page') != null)
-            if ($request->input('page') != 0)
-                $skip = 10 * $request->input('page');
         $article = Article::select(
             "id",
             "cat_id",
@@ -34,7 +30,7 @@ class ArticleController extends ApiController
             "type_video",
             DB::raw("CASE WHEN type_audio = '2' THEN audio WHEN audio != '' THEN (concat ( '" . $request->root() . "/files/article/audio/" . "', audio) ) ELSE '' END as audio"),
             "type_audio"
-        )->where("cat_id", $catId)->take(10)->skip($skip)->get();
+        )->where("cat_id", $catId)->get();
         return $this->respond($article);
     }
 
