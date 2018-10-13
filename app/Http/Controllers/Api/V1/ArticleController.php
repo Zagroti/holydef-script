@@ -248,4 +248,28 @@ class ArticleController extends ApiController
     }
 
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexAdmin($catId, Request $request)
+    {
+        $article = Article::select(
+            "id",
+            "cat_id",
+            "title",
+            "short_description",
+            "description",
+            DB::raw("CASE WHEN type_image = '2' THEN image WHEN image != '' THEN (concat ( '" . $request->root() . "/files/article/image/" . "', image) ) ELSE '' END as image"),
+            "type_image",
+            DB::raw("CASE WHEN type_video = '2' THEN video WHEN video != '' THEN (concat ( '" . $request->root() . "/files/article/video/" . "', video) ) ELSE '' END as video"),
+            "type_video",
+            DB::raw("CASE WHEN type_audio = '2' THEN audio WHEN audio != '' THEN (concat ( '" . $request->root() . "/files/article/audio/" . "', audio) ) ELSE '' END as audio"),
+            "type_audio"
+        )->where("cat_id", $catId)->get();
+        return $this->respond($article);
+    }
+
+
 }
