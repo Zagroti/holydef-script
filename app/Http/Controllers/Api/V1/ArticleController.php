@@ -255,7 +255,6 @@ class ArticleController extends ApiController
      */
     public function indexAdmin($catId, Request $request)
     {
-        dd(1);
         $article = Article::select(
             "id",
             "cat_id",
