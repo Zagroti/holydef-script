@@ -21,6 +21,11 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
     Route::post('auth/otp/call', 'Auth\ZamanakController@postCallRequest');
     Route::post('auth/otp/verify', 'Auth\ZamanakController@postVerifyRequest');
 
+    //for crm
+    Route::get('article/admin/{cat_id}', 'ArticleController@indexAdmin');
+    Route::post('article/{cat_id}', 'ArticleController@store');
+    Route::post('article/{cat_id}/update/{id}', 'ArticleController@update');
+    Route::delete('article/{cat_id}/delete/{id}', 'ArticleController@destroy');
 
     //After Login
     Route::middleware('loginCheck')->group(function () {
@@ -41,10 +46,5 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
 //    Route::get('user', 'UserController@index');
 
     });
-
-    Route::get('article/admin/{cat_id}', 'ArticleController@indexAdmin');
-    Route::post('article/{cat_id}', 'ArticleController@store');
-    Route::post('article/{cat_id}/update/{id}', 'ArticleController@update');
-    Route::delete('article/{cat_id}/delete/{id}', 'ArticleController@destroy');
 
 });
