@@ -16,7 +16,7 @@ class TestController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $server_output = curl_exec($ch);
         $server_output = json_decode($server_output, true);
-        dd($ch);
         curl_close($ch);
+        dd($server_output);
     }
 }
