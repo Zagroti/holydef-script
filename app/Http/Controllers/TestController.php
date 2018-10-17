@@ -9,7 +9,7 @@ class TestController extends Controller
     public function test(Request $request)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://217.218.113.22:8090/v1/subscribe?service_id=9823&user_number=09111160804&product_id=8YEARS_3000&charge_code=BAHSUBCBAH3DAYSTO8");
+        curl_setopt($ch, CURLOPT_URL, "http://217.218.113.22:8090/v1/subscribe?service_id=9823&product_id=8YEARS_3000&charge_code=BAHSUBCBAH3DAYSTO8");
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: */*'));
