@@ -17,9 +17,9 @@ use Illuminate\Http\Request;
 Route::namespace('Api\V1')->prefix('/v1')->group(function () {
 
     //Auth otp
-    Route::post('auth/otp/sms', 'Auth\ZamanakController@postSmsRequest');
-    Route::post('auth/otp/call', 'Auth\ZamanakController@postCallRequest');
-    Route::post('auth/otp/verify', 'Auth\ZamanakController@postVerifyRequest');
+    Route::post('auth/otp/sms', 'Auth\VasController@postSmsRequest');
+    Route::post('auth/otp/call', 'Auth\VasController@postCallRequest');
+    Route::post('auth/otp/verify', 'Auth\VasController@postVerifyRequest');
 
     //for crm
     Route::get('article/admin/{cat_id}', 'ArticleController@indexAdmin');

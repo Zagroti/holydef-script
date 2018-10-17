@@ -12,7 +12,7 @@ use Hashids\Hashids;
 use Illuminate\Http\Request;
 use \Firebase\JWT\JWT;
 
-class ZamanakController extends ApiController
+class VasController extends ApiController
 {
     public function postSmsRequest(Request $request)
     {
@@ -28,23 +28,8 @@ class ZamanakController extends ApiController
         $phone = '98' . $matches[0][0];
         $phone = str_replace('+', '', $phone);
         $phone = $this->normalizePhoneNumber($phone);
-//        $token = rand(1000, 9999);
-        $token = 1111;
-        if (!$this->UsersLoginToken($phone, $token, Constants::LOGIN_TYPE_SMS))
-            throw new ApiException(
-                ApiException::EXCEPTION_BAD_REQUEST_400,
-                'درخواست بیش از حد'
-            );
-        if ($request->header('X-DEBUG') == 1)
-            return $this->respond(["status" => "success", 'code' => $token], null);
-        $result = $this->callZamanakApi([
-            "method" => "sendCaptchaSms",
-            "username" => "xxxx",
-            "password" => "xxx",
-            "mobile" => $phone,
-            "captcha" => $token
-        ]);
-        if (isset($result['error']) != null)
+        $result = $this->callApiSubscribe($phone);
+        if (isset($result['message']) != "successful" && isset($result['status']) != "0")
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
                 $result['error']
@@ -52,45 +37,6 @@ class ZamanakController extends ApiController
         return $this->respond(["status" => "success"], null);
     }
 
-    public function postCallRequest(Request $request)
-    {
-        $phone = $request->input('mobile');
-        $re = '/(\0)?([ ]|,|-|[()]){0,2}9[0|1|2|3|4|9]([ ]|,|-|[()]){0,2}(?:[0-9]([ ]|,|-|[()]){0,2}){8}/m';
-        $str = $phone;
-        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
-        if (!$matches)
-            throw new ApiException(
-                ApiException::EXCEPTION_NOT_FOUND_404,
-                'شماره تلفن شما اشتباه است'
-            );
-        $phone = '98' . $matches[0][0];
-        $phone = str_replace('+', '', $phone);
-        $phone = $this->normalizePhoneNumber($phone);
-//        $token = rand(1000, 9999);
-        $token = 1111;
-        if (!$this->UsersLoginToken($phone, $token, Constants::LOGIN_TYPE_CALL))
-            throw new ApiException(
-                ApiException::EXCEPTION_BAD_REQUEST_400,
-                'درخواست بیش از حد'
-            );
-        if ($request->header('X-DEBUG') == 1)
-            return $this->respond(["status" => "success", 'code' => $token], null);
-        $phone_send = substr($phone, 2);
-        $result = $this->callZamanakApi([
-            "method" => "voiceOtp",
-            "username" => "xxxx",
-            "password" => "xxxx",
-            "mobile" => '0' . $phone_send,
-            "numberToSay" => $token,
-            "captcha" => null
-        ]);
-        if (isset($result['error']) != null)
-            throw new ApiException(
-                ApiException::EXCEPTION_NOT_FOUND_404,
-                $result['error']
-            );
-        return $this->respond(["status" => "success"], null);
-    }
 
     public function postVerifyRequest(Request $request)
     {
@@ -116,7 +62,9 @@ class ZamanakController extends ApiController
         $phone = '98' . $matches[0][0];
         $phone = str_replace('+', '', $phone);
         $phone = $this->normalizePhoneNumber($phone);
-        if (!$this->CheckUsersLoginToken($phone, $request->input('code')))
+        $result = $this->callApiVerifySubscribe($phone, $request->input('code'));
+        return $result;
+        if (1)
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
                 'کد درست نیست'
@@ -124,18 +72,32 @@ class ZamanakController extends ApiController
         return $this->respond($this->verify($phone, $request->header('agent')));
     }
 
-    private function callZamanakApi($req)
+    private function callApiSubscribe($phone)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://zamanak.ir/api/json-v5");
+        curl_setopt($ch, CURLOPT_URL, "http://" . env('VAS_IP') . ":" . env('VAS_PORT') . "/v1/subscribe?product_id=" . env('VAS_PRODUCT_ID') . "&service_id=" . env('VAS_SERVICE_ID') . "&user_number=" . $phone);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "req=" . urlencode(json_encode($req)));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: */*'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $server_output = curl_exec($ch);
         $server_output = json_decode($server_output, true);
         curl_close($ch);
+        return $server_output;
+    }
+
+    private function callApiVerifySubscribe($phone, $code)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "http://" . env('VAS_IP') . ":" . env('VAS_PORT') . "/v1/verify_subscribe?product_id=" . env('VAS_PRODUCT_ID') . "&service_id=" . env('VAS_SERVICE_ID') . "&user_number=" . $phone . "&code_activation=" . $code);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: */*'));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $server_output = curl_exec($ch);
+        $server_output = json_decode($server_output, true);
+        curl_close($ch);
+        dd($server_output);
         return $server_output;
     }
 
@@ -149,40 +111,6 @@ class ZamanakController extends ApiController
         $string = str_replace(' ', '', $string);
         return $string;
     }
-
-
-    private function UsersLoginToken($phone, $token, $type)
-    {
-        UsersLoginToken::where('expire_at', '<', strtotime(date('Y-m-d H:i:s')))->delete();
-        $UsersLoginToken = UsersLoginToken::where(['login' => $phone])->first();
-//        Redis::incr($phone);
-//        if (Redis::get($phone) > 5) {
-//            if (Redis::get($phone) == 6)
-//                Redis::expireAt($phone, time() + 120);
-//            return false;
-//        }
-        if (!$UsersLoginToken) {
-            UsersLoginToken::create(['login' => $phone, 'token' => $token, 'expire_at' => strtotime(date('Y-m-d H:i:s', strtotime("+1 min"))), 'created_at' => strtotime(date('Y-m-d H:i:s'))]);
-            UsersLoginTokenLog::create(['login' => $phone, 'token' => $token, 'type' => $type, 'expire_at' => strtotime(date('Y-m-d H:i:s', strtotime("+1 min"))), 'created_at' => strtotime(date('Y-m-d H:i:s'))]);
-            return true;
-        } else {
-            UsersLoginToken::where(['login' => $phone])->update(['token' => $token, 'expire_at' => strtotime(date('Y-m-d H:i:s', strtotime("+1 min")))]);
-            UsersLoginTokenLog::create(['login' => $phone, 'token' => $token, 'type' => $type, 'expire_at' => strtotime(date('Y-m-d H:i:s', strtotime("+1 min"))), 'created_at' => strtotime(date('Y-m-d H:i:s'))]);
-            return true;
-        }
-    }
-
-    private function CheckUsersLoginToken($phone, $token)
-    {
-        UsersLoginToken::where('expire_at', '<', strtotime(date('Y-m-d H:i:s')))->delete();
-        $UsersLoginToken = UsersLoginToken::where(['login' => $phone, 'token' => $token])->first();
-        if ($UsersLoginToken) {
-            UsersLoginToken::where(['login' => $phone, 'token' => $token])->delete();
-            return true;
-        } else
-            return false;
-    }
-
 
     private function verify($phone, $agent)
     {
