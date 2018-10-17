@@ -6,8 +6,7 @@ use App\Exceptions\ApiException;
 use App\Http\Controllers\ApiController;
 use App\Inside\Constants;
 use App\User;
-use App\UsersLoginToken;
-use App\UsersLoginTokenLog;
+use App\UsersToken;
 use Hashids\Hashids;
 use Illuminate\Http\Request;
 use \Firebase\JWT\JWT;
@@ -64,12 +63,12 @@ class VasController extends ApiController
         $phone = $this->normalizePhoneNumber($phone);
         $result = $this->callApiVerifySubscribe($phone, $request->input('code'));
         return $result;
-        if (1)
+        if (isset($result['message']) != "successful" && isset($result['status']) != "0")
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
                 'کد درست نیست'
             );
-        return $this->respond($this->verify($phone, $request->header('agent')));
+        return $this->respond($this->verify($phone, $request->header('agent'), $result["token"]));
     }
 
     private function callApiSubscribe($phone)
@@ -97,7 +96,6 @@ class VasController extends ApiController
         $server_output = curl_exec($ch);
         $server_output = json_decode($server_output, true);
         curl_close($ch);
-        dd($server_output);
         return $server_output;
     }
 
@@ -112,7 +110,7 @@ class VasController extends ApiController
         return $string;
     }
 
-    private function verify($phone, $agent)
+    private function verify($phone, $agent, $token)
     {
         $user = User::where([Constants::USERS_DB . '.active' => 1, Constants::USERS_DB . '.phone' => $phone])
             ->select(
@@ -141,18 +139,23 @@ class VasController extends ApiController
             $user->isFirst = true;
         else
             $user->isFirst = false;
-        $this->generateToken($user, $agent);
+        if (UsersToken::where(["user_id" => $user->id])->exist())
+            UsersToken::where(["user_id" => $user->id])->update(["token" => $token]);
+        else
+            UsersToken::create(["user_id" => $user->id, "token" => $token]);
+        $this->generateToken($user, $agent, $token);
         return $user;
     }
 
-    private function generateToken(User $user, $agent)
+    private function generateToken(User $user, $agent, $token)
     {
         $object = array(
             "user_id" => $user->id,
-            "agent" => $agent
+            "agent" => $agent,
+            "token" => $token,
         );
-        $token = JWT::encode($object, config("jwt.secret"));
-        $user->token = $token;
+        $tokenJWT = JWT::encode($object, config("jwt.secret"));
+        $user->token = $tokenJWT;
         return true;
     }
 }
