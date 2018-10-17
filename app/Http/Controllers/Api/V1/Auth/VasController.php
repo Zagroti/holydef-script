@@ -89,7 +89,7 @@ class VasController extends ApiController
     private function callApiVerifySubscribe($phone, $code)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://" . env('VAS_IP') . ":" . env('VAS_PORT') . "/v1/verify_subscribe?product_id=" . env('VAS_PRODUCT_ID') . "&service_id=" . env('VAS_SERVICE_ID') . "&user_number=" . $phone . "&code_activation=" . $code);
+        curl_setopt($ch, CURLOPT_URL, "http://" . env('VAS_IP') . ":" . env('VAS_PORT') . "/v1/verify_subscribe?product_id=" . env('VAS_PRODUCT_ID') . "&service_id=" . env('VAS_SERVICE_ID') . "&user_number=" . $phone . "&activation_code=" . $code);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: */*'));
