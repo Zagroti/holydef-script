@@ -62,7 +62,6 @@ class VasController extends ApiController
         $phone = str_replace('+', '', $phone);
         $phone = $this->normalizePhoneNumber($phone);
         $result = $this->callApiVerifySubscribe($phone, $request->input('code'));
-        return $result;
         if (isset($result['message']) != "successful" && isset($result['status']) != "0")
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
