@@ -138,7 +138,7 @@ class VasController extends ApiController
             $user->isFirst = true;
         else
             $user->isFirst = false;
-        if (UsersToken::where(["user_id" => $user->id])->exist())
+        if (UsersToken::where(["user_id" => $user->id])->exists())
             UsersToken::where(["user_id" => $user->id])->update(["token" => $token]);
         else
             UsersToken::create(["user_id" => $user->id, "token" => $token]);
