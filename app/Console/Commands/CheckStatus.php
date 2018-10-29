@@ -43,7 +43,7 @@ class CheckStatus extends Command
         foreach ($users as $value) {
             echo "phone= " . $value->phone . "\n";
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "http://" . env('VAS_IP') . ":" . env('VAS_PORT') . "/v1/charge/status?‬‬?token=" . $value->token);
+            curl_setopt($ch, CURLOPT_URL, "http://" . env('VAS_IP') . ":" . env('VAS_PORT') . "/v1/charge/status?token=" . $value->token);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: */*'));
