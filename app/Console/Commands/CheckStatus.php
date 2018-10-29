@@ -53,7 +53,6 @@ class CheckStatus extends Command
             curl_close($ch);
             echo "status= ";
             print_r($server_output);
-            echo "\n";
         }
     }
 }
