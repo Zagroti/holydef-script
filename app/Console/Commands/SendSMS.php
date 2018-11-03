@@ -54,7 +54,5 @@ class SendSMS extends Command
                 print_r($server_output);
             }
         }
-
-
     }
 }
