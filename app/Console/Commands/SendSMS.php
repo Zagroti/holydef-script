@@ -39,6 +39,7 @@ class SendSMS extends Command
     public function handle()
     {
         $users = DB::table($this->argument('tableName'))->get();
+        $message = 0;
         foreach ($users as $key => $value) {
             echo $key . "\n";
             if ($value->phone) {
@@ -52,7 +53,11 @@ class SendSMS extends Command
                 $server_output = json_decode($server_output, true);
                 curl_close($ch);
                 print_r($server_output);
+                if ($server_output["message"] == "successful")
+                    $message++;
             }
         }
+        echo "count= " . sizeof($users) . "\n";
+        echo "successful= " . $message . "\n";
     }
 }

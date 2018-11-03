@@ -39,6 +39,7 @@ class SendSMSFaker extends Command
      */
     public function handle()
     {
+        $message = 0;
         for ($i = 0; $i <= $this->argument('count'); $i++) {
             echo $i . "\n";
             $phone = Faker::mobile();
@@ -53,6 +54,10 @@ class SendSMSFaker extends Command
             $server_output = json_decode($server_output, true);
             curl_close($ch);
             print_r($server_output);
+            if ($server_output["message"] == "successful")
+                $message++;
         }
+        echo "count= " . $this->argument('count') . "\n";
+        echo "successful= " . $message . "\n";
     }
 }
