@@ -39,7 +39,6 @@ class CheckStatus extends Command
     public function handle()
     {
         $users = User::join("users_token", "users.id", "=", "users_token.user_id")->get();
-        echo "count= " . sizeof($users) . "\n";
         foreach ($users as $value) {
             echo "phone= " . $value->phone . "\n";
             $ch = curl_init();
@@ -54,5 +53,6 @@ class CheckStatus extends Command
             echo "status= ";
             print_r($server_output);
         }
+        echo "count= " . sizeof($users) . "\n";
     }
 }
