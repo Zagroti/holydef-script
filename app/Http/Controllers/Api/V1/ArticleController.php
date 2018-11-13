@@ -271,5 +271,27 @@ class ArticleController extends ApiController
         return $this->respond($article);
     }
 
+    public function infiniteScroll(Request $request)
+    {
+        $skip = 0;
+        if ($request->input('page') != null)
+            if ($request->input('page') != 0)
+                $skip = 10 * $request->input('page');
+        $article = Article::select(
+            "id",
+            "cat_id",
+            "title",
+            "short_description",
+            "description",
+            DB::raw("CASE WHEN type_image = '2' THEN image WHEN image != '' THEN (concat ( '" . $request->root() . "/files/article/image/" . "', image) ) ELSE '' END as image"),
+            "type_image",
+            DB::raw("CASE WHEN type_video = '2' THEN video WHEN video != '' THEN (concat ( '" . $request->root() . "/files/article/video/" . "', video) ) ELSE '' END as video"),
+            "type_video",
+            DB::raw("CASE WHEN type_audio = '2' THEN audio WHEN audio != '' THEN (concat ( '" . $request->root() . "/files/article/audio/" . "', audio) ) ELSE '' END as audio"),
+            "type_audio"
+        )->take(10)->skip($skip)->get();
+        return $this->respond($article);
+    }
+
 
 }
