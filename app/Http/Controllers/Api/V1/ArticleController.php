@@ -282,7 +282,6 @@ class ArticleController extends ApiController
             "cat_id",
             "title",
             "short_description",
-            "description",
             DB::raw("CASE WHEN type_image = '2' THEN image WHEN image != '' THEN (concat ( '" . $request->root() . "/files/article/image/" . "', image) ) ELSE '' END as image"),
             "type_image",
             DB::raw("CASE WHEN type_video = '2' THEN video WHEN video != '' THEN (concat ( '" . $request->root() . "/files/article/video/" . "', video) ) ELSE '' END as video"),
