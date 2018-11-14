@@ -32,6 +32,7 @@ Route::namespace('Api\V1')->prefix('/v1')->group(function () {
 
         //Article
         Route::get('search', 'ArticleController@search');
+        Route::get('infinite', 'ArticleController@infinite');
         Route::get('infinite/scroll', 'ArticleController@infiniteScroll');
         Route::get('article/{cat_id}', 'ArticleController@index');
         Route::get('article/{cat_id}/{id}', 'ArticleController@show');
