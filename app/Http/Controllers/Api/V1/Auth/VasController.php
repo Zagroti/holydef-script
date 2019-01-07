@@ -31,7 +31,7 @@ class VasController extends ApiController
         if (isset($result['message']) != "successful" && isset($result['status']) != "0")
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
-               "لطفا شماره همراه اول وارد نمایید"
+                "لطفا شماره همراه اول وارد نمایید"
             );
         return $this->respond(["status" => "success"], null);
     }
@@ -62,7 +62,7 @@ class VasController extends ApiController
         $phone = str_replace('+', '', $phone);
         $phone = $this->normalizePhoneNumber($phone);
         $result = $this->callApiVerifySubscribe($phone, $request->input('code'));
-        if (isset($result['message']) != "successful" || isset($result['status']) != "0")
+        if ($result['message'] != "successful" && $result['status'] != "0")
             throw new ApiException(
                 ApiException::EXCEPTION_NOT_FOUND_404,
                 'کد درست نیست'
